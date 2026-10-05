@@ -1,0 +1,165 @@
+:root {
+  --bg: #f4ecdd;
+  --surface: #fffaf1;
+  --surface-2: #efe3cd;
+  --ink: #2b1d12;
+  --muted: #7a6450;
+  --line: #dccbb0;
+  --amber: #b8641a;
+  --amber-soft: #f6dcb8;
+  --hop: #4f6f25;
+  --hop-soft: #e2ebcd;
+  --danger: #a5341f;
+  --danger-soft: #f6d8cf;
+  --radius: 14px;
+  --shadow: 0 1px 0 rgba(43, 29, 18, 0.06), 0 8px 24px -16px rgba(43, 29, 18, 0.35);
+  --display: 'Fraunces', Georgia, serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17110c;
+    --surface: #221911;
+    --surface-2: #2d2117;
+    --ink: #f2e6d2;
+    --muted: #b49c82;
+    --line: #3d2e21;
+    --amber: #f0a04b;
+    --amber-soft: #4a3017;
+    --hop: #a9c97a;
+    --hop-soft: #2c3519;
+    --danger: #f08a73;
+    --danger-soft: #4a2219;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  width: 100%;
+  min-width: 0;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
+}
+
+label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--amber);
+}
+
+.btn.primary {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn.primary {
+    color: #1a120a;
+  }
+}
+
+.btn.small {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+.notice {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  background: var(--amber-soft);
+}
+
+.notice.danger {
+  background: var(--danger-soft);
+}
+
+.notice ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+}
