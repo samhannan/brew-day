@@ -59,7 +59,9 @@ describe('BrewSheet', () => {
     store.equipment.maxCapacityL = 40
     store.equipment.kettleVolumeL = 40
     const wrapper = mount(BrewSheet)
+    await wrapper.find('.card:first-child .units button:last-child').trigger('click')
     expect(wrapper.text()).toContain('41.3 cm')
+    await wrapper.find('.gravity .units button:last-child').trigger('click')
     const [depth, sg] = wrapper.findAll('.gravity input')
     await depth.setValue(36.1) // ≈ 29.0 L pre-boil in a 32 cm pot
     await sg.setValue(1.039)
@@ -73,6 +75,8 @@ describe('BrewSheet', () => {
     const wrapper = mount(BrewSheet)
     const gravity = () => wrapper.find('.gravity')
     await gravity().findAll('input')[1].setValue(1.045)
+    expect(gravity().text()).toContain('Volume (L)')
+    await gravity().find('.units button:last-child').trigger('click')
     expect(gravity().text()).toContain('Depth (cm)')
     expect(gravity().text()).toMatch(/add water to [\d.]+ cm/)
 
@@ -88,11 +92,11 @@ describe('BrewSheet', () => {
     Object.assign(store.equipment, DEFAULT_EQUIPMENT, { kettleDiameterCm: 32 })
     const wrapper = mount(BrewSheet)
     const values = () => wrapper.findAll('.card:first-child .row dd').map((dd) => dd.text())
-    // Sparge water and fermenter aren't kettle levels, so they stay in litres.
-    expect(values()).toEqual(['36.3 cm', '4.0 L', '36.1 cm', '32.4 cm', '23.0 L'])
+    expect(values()).toEqual(['29.2 L', '32.0 L', '4.0 L', '29.0 L', '26.0 L', '23.0 L'])
 
-    await wrapper.find('.card:first-child .units button:first-child').trigger('click')
-    expect(values()).toEqual(['29.2 L', '4.0 L', '29.0 L', '26.0 L', '23.0 L'])
+    await wrapper.find('.card:first-child .units button:last-child').trigger('click')
+    // Mash volume is a kettle level; sparge water and fermenter aren't kettle levels, so they stay in litres.
+    expect(values()).toEqual(['36.3 cm', '39.8 cm', '4.0 L', '36.1 cm', '32.4 cm', '23.0 L'])
     Object.assign(store.equipment, DEFAULT_EQUIPMENT)
   })
 
@@ -101,5 +105,24 @@ describe('BrewSheet', () => {
     Object.assign(store.equipment, DEFAULT_EQUIPMENT)
     const cm = mount(BrewSheet).find('.gravity .units button:last-child')
     expect(cm.attributes('disabled')).toBeDefined()
+  })
+
+  it('warns when water plus grain is over capacity and the sheet adds a sparge', () => {
+    store.recipe = parseRecipeText(DARK_ROCK_SAMPLE).recipe
+    Object.assign(store.equipment, DEFAULT_EQUIPMENT, { maxCapacityL: 32 })
+    expect(mount(BrewSheet).text()).toContain('Water + grain (36.0 L) is over your 32.0 L max capacity')
+
+    Object.assign(store.equipment, { maxCapacityL: 40, kettleVolumeL: 40 })
+    expect(mount(BrewSheet).text()).not.toContain('max capacity')
+    Object.assign(store.equipment, DEFAULT_EQUIPMENT)
+  })
+
+  it('warns when the grain alone will not fit', () => {
+    store.recipe = parseRecipeText(DARK_ROCK_SAMPLE).recipe
+    Object.assign(store.equipment, DEFAULT_EQUIPMENT, { maxCapacityL: 0 })
+    const text = mount(BrewSheet).text()
+    expect(text).toContain('Grain alone')
+    expect(text).not.toContain('so the rest is sparged')
+    Object.assign(store.equipment, DEFAULT_EQUIPMENT)
   })
 })

@@ -26,6 +26,8 @@ export interface WaterPlan {
   fullVolumeMashL: number
   /** Mash thicker than ~2.5 L/kg is hard to stir and converts poorly */
   mashTooThick: boolean
+  /** False when even the grain alone overflows the capacity, so no sparge split can help */
+  mashFits: boolean
   preBoilFits: boolean
   liquorToGristLPerKg: number
   mashTempC: number
@@ -85,6 +87,7 @@ export function waterPlan(recipe: Recipe, eq: Equipment): WaterPlan {
     mashVolumeL: mashWaterL + grainDisplacementL,
     fullVolumeMashL,
     mashTooThick: grainKg > 0 && liquorToGristLPerKg < MIN_MASH_RATIO_L_PER_KG,
+    mashFits: mashWaterL + grainDisplacementL <= capacityL,
     preBoilFits: preBoilL <= capacityL,
     liquorToGristLPerKg,
     mashTempC,

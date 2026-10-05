@@ -43,9 +43,11 @@ export function buildBrewSheet(recipe: Recipe, eq: Equipment): BrewSheet {
   const fermentTemp = recipe.yeast.tempC ?? 19
   const steepMin = Math.max(0, ...hops('whirlpool').map((h) => h.time))
 
-  const volumes: Row[] = plan.needsSparge
-    ? [vol('Mash water', plan.mashWaterL), { label: 'Sparge water', value: L(plan.spargeWaterL) }]
-    : [vol('Total water', plan.totalWaterL)]
+  const volumes: Row[] = [
+    vol(plan.needsSparge ? 'Mash water' : 'Total water', plan.mashWaterL),
+    vol('Total mash volume (inc grain)', plan.mashVolumeL),
+  ]
+  if (plan.needsSparge) volumes.push({ label: 'Sparge water', value: L(plan.spargeWaterL) })
   volumes.push(vol('Pre-boil', plan.preBoilL), vol('End of boil', plan.postBoilL), {
     label: 'Into fermenter',
     value: L(recipe.batchSizeL),

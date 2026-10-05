@@ -9,7 +9,7 @@ const recipe = computed(() => store.recipe as Recipe)
 const plan = computed(() => waterPlan(recipe.value, store.equipment))
 
 const hasDiameter = computed(() => store.equipment.kettleDiameterCm > 0)
-const unit = ref<Unit>(hasDiameter.value ? 'cm' : 'L')
+const unit = ref<Unit>('L')
 const inCm = computed(() => unit.value === 'cm' && hasDiameter.value)
 const reading = ref<number | null>(null)
 const sg = ref<number | null>(null)

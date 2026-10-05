@@ -14,7 +14,7 @@ const sheet = computed(() => buildBrewSheet(recipe.value, store.equipment))
 const plan = computed(() => sheet.value.plan)
 
 const hasDiameter = computed(() => store.equipment.kettleDiameterCm > 0)
-const volumeUnit = ref<Unit>(hasDiameter.value ? 'cm' : 'L')
+const volumeUnit = ref<Unit>('L')
 // Rows without a ruler depth (sparge water, fermenter) aren't kettle levels, so they stay in litres.
 const volumeValue = (r: { value: string; sub?: string }) =>
   volumeUnit.value === 'cm' && hasDiameter.value && r.sub ? r.sub : r.value
@@ -32,6 +32,12 @@ const L = (n: number) => `${round(n, 1).toFixed(1)}`
       </p>
     </header>
 
+    <p v-if="!plan.mashFits" class="notice danger">
+      ⚠️ Grain alone ({{ L(plan.mashVolumeL) }} L) is over your {{ L(plan.capacityL) }} L max capacity. Check Equipment.
+    </p>
+    <p v-else-if="plan.needsSparge" class="notice">
+      ⚠️ Water + grain ({{ L(plan.fullVolumeMashL) }} L) is over your {{ L(plan.capacityL) }} L max capacity, so the rest is sparged.
+    </p>
     <p v-if="plan.mashTooThick" class="notice danger">⚠️ Thick mash ({{ round(plan.liquorToGristLPerKg, 1) }} L/kg). Stir well.</p>
     <p v-if="!plan.preBoilFits" class="notice danger">⚠️ Pre-boil volume is over your max capacity. Watch for boil-overs.</p>
 

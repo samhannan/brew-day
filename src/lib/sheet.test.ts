@@ -13,6 +13,7 @@ describe('buildBrewSheet — Dark Rock kit converted to BIAB', () => {
   it('lists the key volumes', () => {
     expect(sheet.volumes).toEqual([
       { label: 'Total water', value: '33.2 L', sub: undefined },
+      { label: 'Total mash volume (inc grain)', value: '36.0 L', sub: undefined },
       { label: 'Pre-boil', value: '29.0 L', sub: undefined },
       { label: 'End of boil', value: '26.0 L', sub: undefined },
       { label: 'Into fermenter', value: '23.0 L' },
@@ -57,8 +58,16 @@ describe('buildBrewSheet — Dark Rock kit converted to BIAB', () => {
 
   it('splits mash and sparge water when the full volume will not fit', () => {
     const sparged = buildBrewSheet(recipe, { ...DEFAULT_EQUIPMENT, maxCapacityL: 32 })
-    expect(sparged.volumes.map((r) => r.label)).toEqual(['Mash water', 'Sparge water', 'Pre-boil', 'End of boil', 'Into fermenter'])
-    expect(sparged.volumes[1].value).toBe('4.0 L')
+    expect(sparged.volumes.map((r) => r.label)).toEqual([
+      'Mash water',
+      'Total mash volume (inc grain)',
+      'Sparge water',
+      'Pre-boil',
+      'End of boil',
+      'Into fermenter',
+    ])
+    expect(sparged.volumes[1].value).toBe('32.0 L')
+    expect(sparged.volumes[2].value).toBe('4.0 L')
     expect(sparged.temps).toContainEqual({ label: 'Sparge', value: '76-77°C' })
   })
 })

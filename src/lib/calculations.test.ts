@@ -91,6 +91,13 @@ describe('waterPlan', () => {
     expect(plan.preBoilFits).toBe(false)
   })
 
+  it('flags a mash that will not fit when the grain alone is over capacity', () => {
+    const grain = { fermentables: [{ name: 'Pale', amountKg: 5 }] }
+    expect(waterPlan(recipe(grain), { ...DEFAULT_EQUIPMENT, maxCapacityL: 32 }).mashFits).toBe(true)
+    // A blank capacity input reaches the plan as 0.
+    expect(waterPlan(recipe(grain), { ...DEFAULT_EQUIPMENT, maxCapacityL: 0 }).mashFits).toBe(false)
+  })
+
   it('gives a 69°C strike for a 66°C mash on a typical 23 L full-volume brew', () => {
     const plan = waterPlan(
       recipe({ batchSizeL: 23, fermentables: [{ name: 'Best Ale', amountKg: 4.15 }] }),
